@@ -2,10 +2,6 @@ const data = require('./data')
 
 const pageName = 'balances';
 
-function getNameData(name) {
-    return data[name];
-}
-
 //Gets full question data using question name/URL and checks for missing or incorrect values 
 function getQuestionName(name) {
     if (!name) {
@@ -47,6 +43,43 @@ function getAnswers(name) {
         console.log('Problem with getting data for this question, contact an administrator if the error persists')
         return ('Invalid array');
     }
+}
+
+//Checks all answers for number of correct and incorrect answers for question
+function checkAnswers(name) {
+    const answers = data[name].questions.fullquestion.answer;
+    const answerResults = answers.map((answer)=> {
+        return answer.correct
+    });
+    return answerResults;
+}
+
+//Checks answer selected by user - assuming the use of radio buttons where each answer is assigned a number ID
+function checkAnswer(answer, answers) {
+    const userAnswer = Number(answer); 
+     if (userAnswer && (typeof userAnswer === 'number')) {
+         if (answers[userAnswer].correct === true) {          
+            return true;
+        } 
+         if (answers[userAnswer].correct === false) {
+            return false;
+        }
+    }
+    return 'Invalid answer';
+}
+
+//Checks answer selected and shows the result to user
+function checkResult(answer, answers) {
+    const userAnswer = Number(answer); 
+    if (userAnswer && (typeof userAnswer === 'number')) {
+        if (answers[userAnswer].correct === true) {          
+           return 'Your answer is correct';
+       } 
+        if (answers[userAnswer].correct === false) {
+           return 'Your answer is incorrect, try again';
+       }
+   }
+   return 'Invalid answer, try again or contact an administrator';
 }
 
 //Gets relevant title columns to display on page
@@ -103,4 +136,4 @@ function getTitle(name) {
         }
 }
 
-module.exports = { getQuestionName, getQuestion, getAnswers, getTitleColumn, getTitle, getVideo, getNameData, getImage }
+module.exports = { getQuestionName, getQuestion, getAnswers, getTitleColumn, getTitle, getVideo, getImage, checkAnswers, checkAnswer, checkResult }
